@@ -40,12 +40,12 @@
   ],
     "requirements": [
     {
-      "name": "pe",
-      "version_requirement": "3.x"
+      "name": "puppet",
+      "version_requirement": "4.x"
     },
     {
-      "name": "simp",
-      "version_requirement": "3.x"
+      "name": "pe",
+      "version_requirement": ">= 2016.2.0"
     }
   ]
 }

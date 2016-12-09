@@ -1,6 +1,6 @@
 # Add a system table $name to /etc/incron.d
 #
-# @param name
+# @option name
 #   The name of the table in /etc/incron.d/
 # @param path
 #   Filesystem path to monitor
@@ -9,44 +9,39 @@
 # @param command
 #   Command to run on detection of event in $path
 # @param custom_content
-#   Custom content to add to /etc/incron.d/$name
+#   Custom content to add to /etc/incron.d/$name.
+#   Defining this disables validation on the content and take priority.
 define incron::system_table (
   Optional[Stdlib::AbsolutePath] $path    = undef,
-  Array[String] $mask                     = ['IN_MODIFY','IN_MOVE','IN_CREATE','IN_DELETE'],
   Optional[Stdlib::AbsolutePath] $command = undef,
+  Array[String] $mask                     = ['IN_MODIFY','IN_MOVE','IN_CREATE','IN_DELETE'],
   Optional[String] $custom_content        = undef
 ) {
   include '::incron'
 
-  if !$path and !$command and !$custom_content {
-    fail ('You must specify either $path and $command or $custom_content.')
-  }
+  validate_re_array($mask,[
+    'IN_ACCESS',
+    'IN_ALL_EVENTS',
+    'IN_ATTRIB',
+    'IN_CLOSE',
+    'IN_CLOSE_NOWRITE',
+    'IN_CLOSE_WRITE',
+    'IN_CREATE',
+    'IN_DELETE',
+    'IN_DELETE_SELF',
+    'IN_DONT_FOLLOW',
+    'IN_MODIFY',
+    'IN_MOVE',
+    'IN_MOVED_FROM',
+    'IN_MOVED_TO',
+    'IN_MOVE_SELF',
+    'IN_NO_LOOP',
+    'IN_ONESHOT',
+    'IN_ONLYDIR',
+    'IN_OPEN'
+  ])
 
-  if !is_integer($mask) {
-    validate_re_array($mask,[
-      'IN_ACCESS',
-      'IN_ALL_EVENTS',
-      'IN_ATTRIB',
-      'IN_CLOSE',
-      'IN_CLOSE_NOWRITE',
-      'IN_CLOSE_WRITE',
-      'IN_CREATE',
-      'IN_DELETE',
-      'IN_DELETE_SELF',
-      'IN_DONT_FOLLOW',
-      'IN_MODIFY',
-      'IN_MOVE',
-      'IN_MOVED_FROM',
-      'IN_MOVED_TO',
-      'IN_MOVE_SELF',
-      'IN_NO_LOOP',
-      'IN_ONESHOT',
-      'IN_ONLYDIR',
-      'IN_OPEN'
-    ])
-  }
-
-  $_mask    = join($mask,',')
+  $_mask = join($mask,',')
   if $custom_content {
     $_content = $custom_content
   }
