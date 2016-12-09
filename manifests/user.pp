@@ -1,13 +1,13 @@
-# Add the user $name to /etc/incron.allow
+# Add the user ``$name`` to ``/etc/incron.allow``
 #
 # @option name
-#   The user to add to /etc/incron.allow
+#   The user to add to ``/etc/incron.allow``
 #
-define incron::user
-{
+define incron::user {
   include '::incron'
 
-  simpcat_fragment { "incron+${name}.user":
+  concat::fragment { "incron_user_${name}":
+    target => '/etc/incron.allow',
     content =>  "${name}\n"
   }
 }

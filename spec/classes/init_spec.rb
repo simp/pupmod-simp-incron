@@ -12,7 +12,7 @@ describe 'incron' do
           it { is_expected.to compile.with_all_deps }
           it { is_expected.to create_class('incron') }
           it { is_expected.to create_incron__user('root') }
-          it { is_expected.to create_simpcat_build('incron') }
+          it { is_expected.to create_concat('/etc/incron.allow') }
           it { is_expected.to create_file('/etc/incron.deny').with({:ensure => 'absent'}) }
           it { is_expected.to create_package('incron').with({:ensure => 'latest'}) }
           it { is_expected.to create_service('incrond').with({

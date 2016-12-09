@@ -2,22 +2,24 @@
 # incrond service.
 #
 # @param users
-#   An array of additional incron users, using the defiend type incron::user.
+#   An Array of additional incron users, using the defined type
+#   incron::user.
 #
 class incron (
   Array[String] $users = []
 ) {
-
 
   $users.each |String $user| {
     ::incron::user { $user: }
   }
   ::incron::user { 'root': }
 
-  simpcat_build { 'incron':
-    order            => ['*.user'],
-    clean_whitespace => 'leading',
-    target           => '/etc/incron.allow'
+  concat { '/etc/incron.allow':
+    owner          => 'root',
+    group          => 'root',
+    mode           => '0400',
+    ensure_newline => true,
+    warn           => true
   }
 
   file { '/etc/incron.deny':
