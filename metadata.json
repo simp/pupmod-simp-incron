@@ -1,13 +1,15 @@
 {
-  "name":    "simp-incron",
+  "name": "simp-incron",
   "version": "0.0.1",
-  "author":  "SIMP Team",
+  "author": "SIMP Team",
   "summary": "A SIMP Puppet module for managing incron",
   "license": "Apache-2.0",
-  "source":  "https://github.com/simp/pupmod-simp-incron",
+  "source": "https://github.com/simp/pupmod-simp-incron",
   "project_page": "https://github.com/simp/pupmod-simp-incron",
-  "issues_url":   "https://simp-project.atlassian.net",
-  "tags": [ "simp" ],
+  "issues_url": "https://simp-project.atlassian.net",
+  "tags": [
+    "simp"
+  ],
   "dependencies": [
     {
       "name": "simp/simplib",
@@ -38,10 +40,10 @@
       ]
     }
   ],
-    "requirements": [
+  "requirements": [
     {
       "name": "puppet",
-      "version_requirement": "4.x"
+      "version_requirement": ">= 4.7.0 < 5.0.0"
     }
   ]
 }
