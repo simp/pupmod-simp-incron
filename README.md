@@ -58,6 +58,20 @@ incron::users:
   - bar
 ```
 
+New system table entries can be added to `/etc/incron.d/` directory with the `incron::system_table` defined type, or
+with the `incron::system_table` hash in hiera. The following example adds two new system table entries to `/etc/incron.d/` directory:
+
+```yaml
+::incron::system_table:
+  allowrw:
+    path: '/data/'
+    command: '/usr/bin/chmod -R 774 $@/$#'
+    mask: ['IN_CREATE']
+  deletelog:
+    path: '/var/run/daemon'
+    command: '/usr/bin/rm /var/log/daemon.log'
+    mask: ['IN_DELETE']
+```
 
 ## Reference
 

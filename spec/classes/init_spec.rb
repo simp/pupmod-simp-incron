@@ -32,6 +32,16 @@ describe 'incron' do
           it { is_expected.to create_incron__user('bar') }
         end
 
+        context 'with a system_table parameter' do
+          let(:params) {{
+            :system_table => {
+              :allowrw   => {:path => '/data/', :command => '/usr/bin/chmod -R 774 $@/$#', :mask => ['IN_CREATE']},
+              :deletelog => {:path => '/var/run/', :command => '/usr/bin/rm /var/log/daemon.log', :mask => ['IN_DELETE']}
+            }
+          }}
+          it { is_expected.to create_incron__system_table('allowrw') }
+          it { is_expected.to create_incron__system_table('deletelog') }
+        end
       end
     end
   end
