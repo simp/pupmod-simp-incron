@@ -6,8 +6,13 @@
 #   incron::user.
 #
 class incron (
-  Array[String] $users = []
+  Array[String] $users = [],
+  Hash $system_table   = {},
 ) {
+
+  $system_table.each |$name, $values| {
+    ::incron::system_table { $name: * => $values }
+  }
 
   $users.each |String $user| {
     ::incron::user { $user: }

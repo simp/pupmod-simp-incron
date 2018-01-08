@@ -1,3 +1,6 @@
+* Mon Jan 8 2018 Rurik Yla-Onnenvuori <rurik.ylae-onnenvuori@baloise.com> - 0.0.4-0
+- Add support for defining system table entries in hiera
+
 * Fri Aug 18 2017 Liz Nemsick <lnemsick.simp@gmail.com> - 0.0.3-0
 - Update concat version in metadata.json
 
