@@ -21,27 +21,28 @@ define incron::system_table (
 
   $mask.each |String $_tmp_mask| {
     if ! ($_tmp_mask in
-    [
-      'IN_ACCESS',
-      'IN_ALL_EVENTS',
-      'IN_ATTRIB',
-      'IN_CLOSE',
-      'IN_CLOSE_NOWRITE',
-      'IN_CLOSE_WRITE',
-      'IN_CREATE',
-      'IN_DELETE',
-      'IN_DELETE_SELF',
-      'IN_DONT_FOLLOW',
-      'IN_MODIFY',
-      'IN_MOVE',
-      'IN_MOVED_FROM',
-      'IN_MOVED_TO',
-      'IN_MOVE_SELF',
-      'IN_NO_LOOP',
-      'IN_ONESHOT',
-      'IN_ONLYDIR',
-      'IN_OPEN'
-    ]) {
+      [
+        'IN_ACCESS',
+        'IN_ALL_EVENTS',
+        'IN_ATTRIB',
+        'IN_CLOSE',
+        'IN_CLOSE_NOWRITE',
+        'IN_CLOSE_WRITE',
+        'IN_CREATE',
+        'IN_DELETE',
+        'IN_DELETE_SELF',
+        'IN_DONT_FOLLOW',
+        'IN_MODIFY',
+        'IN_MOVE',
+        'IN_MOVED_FROM',
+        'IN_MOVED_TO',
+        'IN_MOVE_SELF',
+        'IN_NO_LOOP',
+        'IN_ONESHOT',
+        'IN_ONLYDIR',
+        'IN_OPEN'
+      ]
+    ) {
       fail("${_tmp_mask} is not a valid mask")
     }
   }
