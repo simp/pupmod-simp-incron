@@ -5,12 +5,15 @@
 #   An Array of additional incron users, using the defined type
 #   incron::user.
 #
+# @param system_table
+#   Create incron::system_table resources with hiera
+#
 class incron (
   Array[String] $users = [],
   Hash $system_table   = {},
 ) {
 
-  $system_table.each |$name, $values| {
+  $system_table.each |String $name, Hash $values| {
     ::incron::system_table { $name: * => $values }
   }
 
