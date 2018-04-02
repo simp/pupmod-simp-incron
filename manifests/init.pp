@@ -9,8 +9,9 @@
 #   Create incron::system_table resources with hiera
 #
 class incron (
-  Array[String] $users = [],
-  Hash $system_table   = {},
+  Array[String] $users          = [],
+  Hash          $system_table   = {},
+  String        $package_ensure = simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' }),
 ) {
 
   $system_table.each |String $name, Hash $values| {
@@ -35,7 +36,18 @@ class incron (
   }
 
   package { 'incron':
-    ensure => latest
+    ensure => $package_ensure
+  }
+
+  # service installed with wrong permissions from rpm.
+  # If permissions not changed you get annoying error
+  # in system log.
+  if 'systemd' in $facts['init_systems'] {
+    file { '/usr/lib/systemd/system/incrond.service':
+      mode    => '0644',
+      require => Package['incron'],
+      before  => Service['incrond']
+    }
   }
 
   service { 'incrond':

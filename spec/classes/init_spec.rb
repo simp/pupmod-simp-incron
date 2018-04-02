@@ -2,10 +2,17 @@ require 'spec_helper'
 
 describe 'incron' do
   context 'supported operating systems' do
-    on_supported_os.each do |os, facts|
+    on_supported_os.each do |os, os_facts|
       context "on #{os}" do
-        let(:facts) do
-          facts
+
+        if os_facts[:operatingsystemmajrelease].to_s == '6'
+          let(:facts) do
+            os_facts.merge(init_systems: ['sysv'])
+          end
+        else
+          let(:facts) do
+            os_facts.merge(init_systems: ['systemd'])
+          end
         end
 
         context 'with default parameters' do
@@ -14,7 +21,12 @@ describe 'incron' do
           it { is_expected.to create_incron__user('root') }
           it { is_expected.to create_concat('/etc/incron.allow') }
           it { is_expected.to create_file('/etc/incron.deny').with({:ensure => 'absent'}) }
-          it { is_expected.to create_package('incron').with({:ensure => 'latest'}) }
+          it { is_expected.to create_package('incron').with({:ensure => 'installed'}) }
+          if os_facts[:operatingsystemmajrelease].to_s == '6'
+            it { is_expected.to_not create_file('/usr/lib/systemd/system/incrond.service')}
+          else
+            it { is_expected.to create_file('/usr/lib/systemd/system/incrond.service').with_mode('0644')}
+          end
           it { is_expected.to create_service('incrond').with({
             :ensure     => 'running',
             :enable     => true,
