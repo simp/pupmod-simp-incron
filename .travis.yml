@@ -13,6 +13,7 @@ sudo: false
 
 bundler_args: --without development system_tests --path .vendor
 
+
 notifications:
   email: false
 
@@ -26,7 +27,6 @@ before_install:
 
 jobs:
   allow_failures:
-    # https://tickets.puppetlabs.com/browse/PUP-8418
     - env: STRICT_VARIABLES=yes TRUSTED_NODE_DATA=yes PUPPET_VERSION="~> 5.0"
 
   include:
@@ -66,7 +66,6 @@ jobs:
       env: STRICT_VARIABLES=yes TRUSTED_NODE_DATA=yes PUPPET_VERSION="~> 4.7.0"
       script:
         - bundle exec rake spec
-
     # This needs to be last since we have an acceptance test
     - stage: deploy
       rvm: 2.4.1
