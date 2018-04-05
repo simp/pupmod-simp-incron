@@ -1,3 +1,8 @@
+* Mon Apr 02 2018 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 0.2.0-0
+- Fixed permission on incrond service file to clear errors in system log.
+- Updated package to use package ensure to control updates.  This changed the
+  default ensure of package to installed from latest.
+
 * Mon Feb 12 2018 Liz Nemsick <lnemsick.simp@gmail.com> - 0.1.0-0
 - Update upperbound on puppetlabs/concat version to < 5.0.0
 

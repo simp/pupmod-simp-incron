@@ -1,18 +1,16 @@
 HOSTS:
-  server:
+  centos7:
     roles:
       - server
       - default
-      - master
     platform:   el-7-x86_64
     box:        centos/7
     hypervisor: vagrant
-  client:
+  centos6:
     roles:
       - client
-      - agent
-    platform:   el-7-x86_64
-    box:        centos/7
+    platform:   el-6-x86_64
+    box:        centos/6
     hypervisor: vagrant
 CONFIG:
   log_level: verbose
