@@ -13,15 +13,16 @@ class incron (
   Hash          $system_table   = {},
   String        $package_ensure = simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' }),
 ) {
+  package { 'incron': ensure => $package_ensure }
 
   $system_table.each |String $name, Hash $values| {
-    ::incron::system_table { $name: * => $values }
+    incron::system_table { $name: * => $values }
   }
 
   $users.each |String $user| {
-    ::incron::user { $user: }
+    incron::user { $user: }
   }
-  ::incron::user { 'root': }
+  incron::user { 'root': }
 
   concat { '/etc/incron.allow':
     owner          => 'root',
@@ -31,12 +32,13 @@ class incron (
     warn           => true
   }
 
-  file { '/etc/incron.deny':
-    ensure => 'absent'
-  }
+  file { '/etc/incron.deny': ensure => 'absent' }
 
-  package { 'incron':
-    ensure => $package_ensure
+  file { '/etc/incron.d':
+    ensure => 'directory',
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0640'
   }
 
   # service installed with wrong permissions from rpm.
