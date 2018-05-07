@@ -15,6 +15,22 @@
 #     /foo2/bar2 IN_MODIFY,IN_MOVE,IN_CREATE,IN_DELETE /bin/baz
 #     /foo2/bar2 IN_MODIFY,IN_MOVE,IN_CREATE,IN_DELETE /bin/baz2
 #
+# @example Path Globbing
+#
+#   For the following directory structure:
+#      /foo/bar/one/one_more/baz/one.txt
+#      /foo/bar/one/one_other/baz/ignore.me
+#      /foo/bar/two/baz/two.txt
+#
+#   incron::system_table { 'glob':
+#     path    => '/foo/bar/**/baz/*.txt',
+#     command => '/bin/baz'
+#   }
+#
+#   Results in /etc/incron.d/glob with contents:
+#     /foo/bar/one/one_more/baz/one.txt IN_MODIFY,IN_MOVE,IN_CREATE,IN_DELETE /bin/baz
+#     /foo/bar/two/baz/two.txt IN_MODIFY,IN_MOVE,IN_CREATE,IN_DELETE /bin/baz
+#
 # @option name
 #   The name of the table in /etc/incron.d/
 #
