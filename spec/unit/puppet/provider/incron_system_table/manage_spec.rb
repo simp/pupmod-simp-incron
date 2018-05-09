@@ -97,12 +97,12 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
             File.join(@tmpdir, 'other', 'is', '3') + " #{mask} #{command}",
             File.join(@tmpdir, 'this', 'is', '1') + " #{mask} #{command}",
             File.join(@tmpdir, 'that', 'is', '2') + " #{mask} #{command}",
-          ].join("\n")
+          ].sort.join("\n")
         }
 
         it do
           expect{provider.create}.to_not raise_error
-          expect(IO.read(target).strip).to eq(resource_output)
+          expect(IO.read(target).lines.sort.join.strip).to eq(resource_output)
         end
       end
 
