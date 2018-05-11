@@ -1,3 +1,11 @@
+* Fri May 04 2018 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.3.0-0
+- Added a native type `incron_system_table` to allow for client side glob
+  expansion on paths
+- Pushed all validation of parameters off to the native type from
+  `incron::system_table`
+- Updated acceptance tests to verify that incron is actually working
+- Bumped the supported puppet version to '< 6'
+
 * Mon Apr 02 2018 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 0.2.0-0
 - Fixed permission on incrond service file to clear errors in system log.
 - Updated package to use package ensure to control updates.  This changed the

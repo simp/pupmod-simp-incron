@@ -1,66 +1,78 @@
 # Add a system table $name to /etc/incron.d
 #
+# If multiple ``path`` and/or ``command`` options are specified, they will be
+# expanded into all matching possibilities.
+#
+# @example Multiplexed Path and Command
+#   incron::system_table { 'test':
+#     path    => ['/foo/bar', '/foo2/bar2'],
+#     command => ['/bin/baz', '/bin/baz2']
+#   }
+#
+#   Results in /etc/incron.d/test with contents:
+#     /foo/bar IN_MODIFY,IN_MOVE,IN_CREATE,IN_DELETE /bin/baz
+#     /foo/bar IN_MODIFY,IN_MOVE,IN_CREATE,IN_DELETE /bin/baz2
+#     /foo2/bar2 IN_MODIFY,IN_MOVE,IN_CREATE,IN_DELETE /bin/baz
+#     /foo2/bar2 IN_MODIFY,IN_MOVE,IN_CREATE,IN_DELETE /bin/baz2
+#
+# @example Path Globbing
+#
+#   For the following directory structure:
+#      /foo/bar/one/one_more/baz/one.txt
+#      /foo/bar/one/one_other/baz/ignore.me
+#      /foo/bar/two/baz/two.txt
+#
+#   incron::system_table { 'glob':
+#     path    => '/foo/bar/**/baz/*.txt',
+#     command => '/bin/baz'
+#   }
+#
+#   Results in /etc/incron.d/glob with contents:
+#     /foo/bar/one/one_more/baz/one.txt IN_MODIFY,IN_MOVE,IN_CREATE,IN_DELETE /bin/baz
+#     /foo/bar/two/baz/two.txt IN_MODIFY,IN_MOVE,IN_CREATE,IN_DELETE /bin/baz
+#
 # @option name
 #   The name of the table in /etc/incron.d/
+#
 # @param path
-#   Filesystem path to monitor
+#   Filesystem path(s) to monitor
+#
+#   * May contain Ruby ``Dir.glob`` compatible Strings
+#
 # @param mask
 #   Symbolic array or numeric mask for events
+#
 # @param command
-#   Command to run on detection of event in $path
+#   Command(s) to run on detection of event in $path
+#
 # @param custom_content
 #   Custom content to add to /etc/incron.d/$name.
 #   Defining this disables validation on the content and take priority.
+#
 define incron::system_table (
-  Optional[Stdlib::AbsolutePath] $path    = undef,
-  Optional[Stdlib::AbsolutePath] $command = undef,
-  Array[String] $mask                     = ['IN_MODIFY','IN_MOVE','IN_CREATE','IN_DELETE'],
-  Optional[String] $custom_content        = undef
+  Boolean                                  $enable         = true,
+  Optional[Variant[Array[String], String]] $path           = undef,
+  Optional[Variant[Array[String], String]] $command        = undef,
+  Array[String]                            $mask           = ['IN_MODIFY','IN_MOVE','IN_CREATE','IN_DELETE'],
+  Optional[String]                         $custom_content = undef
 ) {
+
   include '::incron'
 
-  $mask.each |String $_tmp_mask| {
-    if ! ($_tmp_mask in
-      [
-        'IN_ACCESS',
-        'IN_ALL_EVENTS',
-        'IN_ATTRIB',
-        'IN_CLOSE',
-        'IN_CLOSE_NOWRITE',
-        'IN_CLOSE_WRITE',
-        'IN_CREATE',
-        'IN_DELETE',
-        'IN_DELETE_SELF',
-        'IN_DONT_FOLLOW',
-        'IN_MODIFY',
-        'IN_MOVE',
-        'IN_MOVED_FROM',
-        'IN_MOVED_TO',
-        'IN_MOVE_SELF',
-        'IN_NO_LOOP',
-        'IN_ONESHOT',
-        'IN_ONLYDIR',
-        'IN_OPEN'
-      ]
-    ) {
-      fail("${_tmp_mask} is not a valid mask")
+  $_ensure = $enable ? { true => 'present', default => 'absent' }
+
+  if $custom_content {
+    incron_system_table { $name:
+      ensure  => $_ensure,
+      content => $custom_content
     }
   }
-
-  $_mask = join($mask,',')
-  if $custom_content {
-    $_content = $custom_content
-  }
   else {
-    $_content = "${path} ${_mask} ${command}\n"
-  }
-
-  file { "/etc/incron.d/${name}":
-    content => $_content,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0600',
-    require => Package['incron'],
-    notify  => Service['incrond']
+    incron_system_table { $name:
+      ensure  => $_ensure,
+      path    => $path,
+      mask    => $mask,
+      command => $command
+    }
   }
 }
