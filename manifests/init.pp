@@ -38,18 +38,7 @@ class incron (
     ensure => 'directory',
     owner  => 'root',
     group  => 'root',
-    mode   => '0640'
-  }
-
-  # service installed with wrong permissions from rpm.
-  # If permissions not changed you get annoying error
-  # in system log.
-  if 'systemd' in $facts['init_systems'] {
-    file { '/usr/lib/systemd/system/incrond.service':
-      mode    => '0644',
-      require => Package['incron'],
-      before  => Service['incrond']
-    }
+    mode   => '0755'
   }
 
   service { 'incrond':

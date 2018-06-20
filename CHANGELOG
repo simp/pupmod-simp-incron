@@ -1,3 +1,8 @@
+* Tue Jun 19 2018 Nick Miller <nick.miller@onyxpoint.com> - 0.3.0-0
+- Stop managing the systemd unit file, because deviating from the RPM defaults
+  violates the STIG
+- Set /etc/incron.d to 0755, the RPM default
+
 * Fri May 04 2018 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.3.0-0
 - Added a native type `incron_system_table` to allow for client side glob
   expansion on paths
