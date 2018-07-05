@@ -1,5 +1,4 @@
-[![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html) [![Build Status](https://travis-ci.org/simp/pupmod-simp-incron.svg)](https://travis-ci.org/simp/pupmod-simp-incron) [![SIMP compatibility](https://img.shields.io/badge/SIMP%20compatibility-6.0.*-orange.svg)](https://img.shields.io/badge/SIMP%20compatibility-6.0.*-orange.svg)
-
+[![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html) [![Build Status](https://travis-ci.org/simp/pupmod-simp-incron.svg)](https://travis-ci.org/simp/pupmod-simp-incron)
 
 #### Table of Contents
 
@@ -19,15 +18,23 @@ This module manages the incron packges, service, and /etc/incron.allow.
 
 
 ### This is a SIMP module
-This module is a component of the [System Integrity Management Platform](https://github.com/NationalSecurityAgency/SIMP), a compliance-management framework built on Puppet.
 
-If you find any issues, they can be submitted to our [JIRA](https://simp-project.atlassian.net/).
+This module is a component of the [System Integrity Management
+Platform](https://github.com/NationalSecurityAgency/SIMP), a
+compliance-management framework built on Puppet.
 
-This module is optimally designed for use within a larger SIMP ecosystem, but it can be used independently:
+It is designed to be used within a larger SIMP ecosystem, but it can be used
+independently:
 
- * When included within the SIMP ecosystem, security compliance settings will be managed from the Puppet server.
- * If used independently, all SIMP-managed security subsystems are disabled by default and must be explicitly opted into by administrators.  Please review the `$client_nets`, `$enable_*` and `$use_*` parameters in `manifests/init.pp` for details.
+ * When included within the SIMP ecosystem, security compliance settings will
+   be managed from the Puppet server.
+ * If used as an independent module, all SIMP-managed security subsystems are
+   disabled by default and must be explicitly opted into by administrators.
+   Please review the parameters in [`simp/simp_options`][simp_simp_options] for
+   details.
 
+If you run into problems, please let us know by filing an issue at
+https://simp-project.atlassian.net/.
 
 ## Setup
 
@@ -62,7 +69,7 @@ New system table entries can be added to `/etc/incron.d/` directory with the `in
 with the `incron::system_table` hash in hiera. The following example adds two new system table entries to `/etc/incron.d/` directory:
 
 ```yaml
-::incron::system_table:
+incron::system_table:
   allowrw:
     path: '/data/'
     command: '/usr/bin/chmod -R 774 $@/$#'
