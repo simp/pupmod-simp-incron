@@ -156,6 +156,35 @@ pup5_3-unit:
   <<: *setup_bundler_env
   <<: *spec_tests
 
+
+# Puppet 5.5 for PE 2018.1 support
+# See: https://puppet.com/misc/puppet-enterprise-lifecycle
+# --------------------------------------
+pup5_5-validation:
+  stage: validation
+  tags:
+    - docker
+  image: ruby:2.4
+  variables:
+    PUPPET_VERSION: '~> 5.5.1'
+  <<: *cache_bundler
+  <<: *setup_bundler_env
+  <<: *validation_checks
+
+pup5_5-unit:
+  stage: unit
+  tags:
+    - docker
+  image: ruby:2.4
+  variables:
+    PUPPET_VERSION: '~> 5.5.1'
+  <<: *cache_bundler
+  <<: *setup_bundler_env
+  <<: *spec_tests
+
+
+# Keep an eye on the latest puppet 5
+# ----------------------------------
 pup5_latest-validation:
   stage: validation
   tags:
@@ -177,7 +206,6 @@ pup5_latest-unit:
   <<: *cache_bundler
   <<: *setup_bundler_env
   <<: *spec_tests
-
 
 # Acceptance tests
 # ==============================================================================
@@ -205,3 +233,82 @@ fips:
   script:
     - bundle exec rake spec_clean
     - bundle exec rake beaker:suites[default]
+
+el-pup5_5:
+  stage: acceptance
+  tags:
+    - beaker
+  <<: *cache_bundler
+  <<: *setup_bundler_env
+  variables:
+    PUPPET_VERSION: '~> 5.5.1'
+    BEAKER_PUPPET_COLLECTION: 'puppet5'
+  script:
+    - bundle exec rake spec_clean
+    - bundle exec rake beaker:suites[default]
+
+el-pup5_5-fips:
+  stage: acceptance
+  tags:
+    - beaker
+  <<: *cache_bundler
+  <<: *setup_bundler_env
+  variables:
+    PUPPET_VERSION: '~> 5.5.1'
+    BEAKER_PUPPET_COLLECTION: 'puppet5'
+    BEAKER_fips: 'yes'
+  script:
+    - bundle exec rake spec_clean
+    - bundle exec rake beaker:suites[default]
+
+oel:
+  stage: acceptance
+  tags:
+    - beaker
+  <<: *cache_bundler
+  <<: *setup_bundler_env
+  variables:
+    PUPPET_VERSION: '4.10'
+  script:
+    - bundle exec rake spec_clean
+    - bundle exec rake beaker:suites[default,oel]
+
+oel-fips:
+  stage: acceptance
+  tags:
+    - beaker
+  <<: *cache_bundler
+  <<: *setup_bundler_env
+  variables:
+    PUPPET_VERSION: '4.10'
+    BEAKER_fips: 'yes'
+  script:
+    - bundle exec rake spec_clean
+    - bundle exec rake beaker:suites[default,oel]
+
+oel-pup5_5:
+  stage: acceptance
+  tags:
+    - beaker
+  <<: *cache_bundler
+  <<: *setup_bundler_env
+  variables:
+    PUPPET_VERSION: '~> 5.5.1'
+    BEAKER_PUPPET_COLLECTION: 'puppet5'
+  script:
+    - bundle exec rake spec_clean
+    - bundle exec rake beaker:suites[default,oel]
+
+oel-pup5_5-fips:
+  stage: acceptance
+  tags:
+    - beaker
+  <<: *cache_bundler
+  <<: *setup_bundler_env
+  variables:
+    PUPPET_VERSION: '~> 5.5.1'
+    BEAKER_PUPPET_COLLECTION: 'puppet5'
+    BEAKER_fips: 'yes'
+  script:
+    - bundle exec rake spec_clean
+    - bundle exec rake beaker:suites[default,oel]
