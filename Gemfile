@@ -7,7 +7,7 @@ gem_sources.each { |gem_source| source gem_source }
 
 group :test do
   gem 'rake'
-  gem 'puppet', ENV.fetch('PUPPET_VERSION',  '~> 4.0')
+  gem 'puppet', ENV.fetch('PUPPET_VERSION',  '~> 5.5')
   gem 'rspec'
   gem 'rspec-puppet'
   gem 'hiera-puppet-helper'
@@ -21,21 +21,12 @@ group :test do
 end
 
 group :development do
-  gem 'travis'
-  gem 'travis-lint'
-  gem 'travish'
-  gem 'puppet-blacksmith'
-  gem 'guard-rake'
   gem 'pry'
   gem 'pry-doc'
-
-  # `listen` is a dependency of `guard`
-  # from `listen` 3.1+, `ruby_dep` requires Ruby version >= 2.2.3, ~> 2.2
-  gem 'listen', '~> 3.0.6'
 end
 
 group :system_tests do
   gem 'beaker'
   gem 'beaker-rspec'
-  gem 'simp-beaker-helpers', ENV.fetch('SIMP_BEAKER_HELPERS_VERSION', '~> 1.7')
+  gem 'simp-beaker-helpers', ENV.fetch('SIMP_BEAKER_HELPERS_VERSION', '~> 1.12')
 end
