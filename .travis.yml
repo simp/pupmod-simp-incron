@@ -1,11 +1,18 @@
 # The testing matrix considers ruby/puppet versions supported by SIMP and PE:
+#
+# https://puppet.com/docs/pe/2018.1/component_versions_in_recent_pe_releases.html
+# https://puppet.com/misc/puppet-enterprise-lifecycle
+# https://puppet.com/docs/pe/2018.1/overview/getting_support_for_pe.html
 # ------------------------------------------------------------------------------
-#  release    pup   ruby      eol
-# PE 2016.4   4.7   2.1.9  TBD (LTS)
-# PE 2016.5   4.8   2.1.9  2017-10-31
-# SIMP6.0.0   4.8   2.1.9  TBD
-# PE 2017.1   4.9   2.1.9  2017-10-31
-# PE 2017.2   4.10  2.1.9  TBD
+# Release       Puppet   Ruby   EOL
+# PE 2016.4.15  4.10.12  2.1.9  2018-12 (LTS)
+# SIMP 6.0      4.8.2    2.1.9  TBD
+# SIMP 6.1      4.10.6   2.1.9  TBD
+# SIMP 6.2      4.10.12  2.1.9  TBD
+# SIMP 6.3      5.5.?    2.4.4  TBD***
+# PE 2018.1     5.5.6    2.4.4  2020-05 (LTS)***
+#
+# *** = Modules created for SIMP 6.3+ are not required to support Puppet < 5.5
 ---
 language: ruby
 cache: bundler
@@ -24,12 +31,13 @@ addons:
 
 before_install:
   - rm -f Gemfile.lock
+  - gem update --system
 
 jobs:
   include:
     - stage: check
       rvm: 2.4.4
-      env: STRICT_VARIABLES=yes TRUSTED_NODE_DATA=yes PUPPET_VERSION="~> 5"
+      env: STRICT_VARIABLES=yes PUPPET_VERSION="~> 5.5"
       script:
         - bundle exec rake check:dot_underscore
         - bundle exec rake check:test_file
@@ -42,18 +50,25 @@ jobs:
 
     - stage: spec
       rvm: 2.4.4
-      env: STRICT_VARIABLES=yes TRUSTED_NODE_DATA=yes PUPPET_VERSION="~> 5.0"
+      env: STRICT_VARIABLES=yes PUPPET_VERSION="~> 5.5.6"
+      script:
+        - bundle exec rake spec
+
+    - stage: spec
+      rvm: 2.4.4
+      env: STRICT_VARIABLES=yes PUPPET_VERSION="~> 5.5"
       script:
         - bundle exec rake spec
 
     - stage: spec
       rvm: 2.1.9
-      env: STRICT_VARIABLES=yes TRUSTED_NODE_DATA=yes PUPPET_VERSION="~> 4.10.0"
+      env: STRICT_VARIABLES=yes PUPPET_VERSION="~> 4.10.4"
       script:
         - bundle exec rake spec
 
     - stage: deploy
       rvm: 2.4.4
+      if: 'fork = false AND tag = true'
       script:
         - true
       before_deploy:
@@ -73,5 +88,5 @@ jobs:
             secure: "wAJ5h5DNC/Yn+lTC3wARfJj/kScvRL85FiJai+VT7RBZcZMzDHyvAKbGDFGW/exGC8G8t1+jcX25qCPEGiZFONLbWH3Gr6Jdu3lMFFHzx7Q9m9PXl4Pbw3U16BXkBDukKOuTjDseFR6QVP0FGQHWbcIKVmKmNm3Z5caO01VwlydJHxIS4RVi4ya2MtFyjZwPnSaWneeU6KK6uuJoAtKy9s1VVTgFzLHN8ln7jlogQL4cUrNXtl4z2dYbq7uV7zpMg5vVLB8KSTM/jt+EVBxhauwjAzVbFhrEExNu/sCbvF6/8TySSJ5TLjejIZmIf+SDn29MFs0lUUVjmNXpvgmx5uLzp/MObVEtTsFJ9Idfe5G6qG65optDsNLF/cObTxu27O8O4WlMyxEs/gCfHTuOj7x4eC9TjOBaQac9p9xNrDo6C7m5m+8juPAXVVpS9Yv2IFzZoAU7ajUAkbvBENCSTUcFdbKsnxm8hmIxg3LUyz8+Q1f9X02MJCu+1RoDjdJzzCToV/ldC5ZugLR9z+kkc2gXPOL2ehhAgAn/M8o3Ac0NpkOghK8Vsi6HlckbLIj0UQCyurgVUS5SSzG5/9w40iidZ75fxgskSH/8VrdJJvrEpuABChV2bKPsIUJJZLQWIvPLpGMXZYAFSkN7wHvTee+kw/8dYLd540FaUWe9O6k="
           on:
             tags: true
-            rvm: 2.4.1
+            rvm: 2.4.4
             condition: '($SKIP_FORGE_PUBLISH != true)'
