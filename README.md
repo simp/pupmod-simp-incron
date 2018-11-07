@@ -1,4 +1,8 @@
-[![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html) [![Build Status](https://travis-ci.org/simp/pupmod-simp-incron.svg)](https://travis-ci.org/simp/pupmod-simp-incron)
+[![License](https://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/73/badge)](https://bestpractices.coreinfrastructure.org/projects/73)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/simp/incron.svg)](https://forge.puppetlabs.com/simp/incron)
+[![Puppet Forge Downloads](https://img.shields.io/puppetforge/dt/simp/incron.svg)](https://forge.puppetlabs.com/simp/incron)
+[![Build Status](https://travis-ci.org/simp/pupmod-simp-incron.svg)](https://travis-ci.org/simp/pupmod-simp-incron)
 
 #### Table of Contents
 
@@ -19,9 +23,8 @@ This module manages the incron packges, service, and /etc/incron.allow.
 
 ### This is a SIMP module
 
-This module is a component of the [System Integrity Management
-Platform](https://github.com/NationalSecurityAgency/SIMP), a
-compliance-management framework built on Puppet.
+This module is a component of the [System Integrity Management Platform](https://simp-project.com),
+a compliance-management framework built on Puppet.
 
 It is designed to be used within a larger SIMP ecosystem, but it can be used
 independently:
