@@ -1,3 +1,9 @@
+* Sun Jan 20 2019 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.4.0-0
+- Add Incron::Mask Data Type denoting valid incron masks
+- Added support for the new options starting with 0.5.12
+  - Automatically strip out options that are not supported by earlier versions
+    for seamless backward compatibility
+
 * Thu Nov 01 2018 Jeanne Greulich <jeanne.greulich@onyxpoint.com> - 0.3.1-0
 - Update static assets for puppet 5
 - Update badges in README.md
