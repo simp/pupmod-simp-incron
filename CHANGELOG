@@ -1,4 +1,5 @@
 * Sun Jan 20 2019 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.4.0-0
+- Add the ability to set the 'max_open_files' ulimit
 - Add Incron::Mask Data Type denoting valid incron masks
 - Added support for the new options starting with 0.5.12
   - Automatically strip out options that are not supported by earlier versions

@@ -10,6 +10,7 @@ describe 'incron' do
         it { is_expected.to create_concat('/etc/incron.allow') }
         it { is_expected.to create_file('/etc/incron.deny').with({:ensure => 'absent'}) }
         it { is_expected.to create_package('incron').with({:ensure => 'installed'}) }
+        it { is_expected.to create_init_ulimit('mod_open_files_incrond').with_value('unlimited') }
         it { is_expected.to create_service('incrond').with({
           :ensure     => 'running',
           :enable     => true,
