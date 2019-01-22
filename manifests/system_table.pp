@@ -57,14 +57,15 @@ define incron::system_table (
   Optional[String]                         $custom_content = undef
 ) {
 
-  include '::incron'
+  include 'incron'
 
   $_ensure = $enable ? { true => 'present', default => 'absent' }
 
   if $custom_content {
     incron_system_table { $name:
       ensure  => $_ensure,
-      content => $custom_content
+      content => $custom_content,
+      notify  => Class['incron::service']
     }
   }
   else {
@@ -72,7 +73,8 @@ define incron::system_table (
       ensure  => $_ensure,
       path    => $path,
       mask    => $mask,
-      command => $command
+      command => $command,
+      notify  => Class['incron::service']
     }
   }
 }

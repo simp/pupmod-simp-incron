@@ -28,6 +28,10 @@ class incron (
 ) {
   package { 'incron': ensure => $package_ensure }
 
+  include incron::service
+
+  Package['incron'] ~> Class['incron::service']
+
   $system_table.each |String $name, Hash $values| {
     incron::system_table { $name: * => $values }
   }
@@ -58,14 +62,6 @@ class incron (
     target => 'incrond',
     item   => 'max_open_files',
     value  => $max_open_files,
-    notify => Service['incrond']
-  }
-
-  service { 'incrond':
-    ensure     => 'running',
-    enable     => true,
-    hasstatus  => true,
-    hasrestart => true,
-    require    => Package['incron']
+    notify => Class['incron::service']
   }
 }
