@@ -12,6 +12,7 @@ type Incron::Mask = Enum[
   'IN_MODIFY',
   'IN_MOVE',
   'IN_MOVED_FROM',
+  'IN_MOVED_TO',
   'IN_MOVE_SELF',
   'IN_NO_LOOP',
   'IN_ONESHOT',
