@@ -15,7 +15,7 @@ describe 'incron' do
           :ensure     => 'running',
           :enable     => true,
           :hasstatus  => true,
-          :hasrestart => true
+          :hasrestart => false
         }) }
       end
 
