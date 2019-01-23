@@ -34,6 +34,9 @@
 # @option name
 #   The name of the table in /etc/incron.d/
 #
+# @param enable
+#   Whether to enable or disable the table
+#
 # @param path
 #   Filesystem path(s) to monitor
 #
