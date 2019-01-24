@@ -1,6 +1,9 @@
 * Sun Jan 20 2019 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.4.0-0
 - Add the ability to set the 'max_open_files' ulimit
 - Add Incron::Mask Data Type denoting valid incron masks
+- Add `incron::purge` parameter to optionally delete all unmanaged files in
+  `/etc/incron.d`. This may be enabled by default in the future but is
+  currently disabled to preserve the existing functionality.
 - Added support for the new options starting with 0.5.12
   - Automatically strip out options that are not supported by earlier versions
     for seamless backward compatibility
