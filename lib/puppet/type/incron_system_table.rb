@@ -40,11 +40,15 @@ Puppet::Type.newtype(:incron_system_table) do
         'IN_MODIFY',
         'IN_MOVE',
         'IN_MOVED_FROM',
+        'IN_MOVED_TO',
         'IN_MOVE_SELF',
         'IN_NO_LOOP',
         'IN_ONESHOT',
         'IN_ONLYDIR',
-        'IN_OPEN'
+        'IN_OPEN',
+        'loopable=true',
+        'recursive=false',
+        'dotdirs=true'
       ]
       self.class.send(:attr_reader, 'valid_incron_masks')
 
@@ -66,7 +70,28 @@ Puppet::Type.newtype(:incron_system_table) do
     desc 'The incron "masks" to apply'
 
     munge do |value|
-      Array(value).join(',')
+      value = Array(value).join(',').split(',')
+
+      strip_new_features = true
+
+      # Version 0.5.12 of incron added new features (denoted by items with an
+      # '=' in them) that are not supported by older releases. In the interest
+      # of cross-version functionality, we strip them out here.
+      incrond_version = Facter.value(:incrond_version)
+      if incrond_version && Puppet::Util::Package.versioncmp(incrond_version, '0.5.12') >= 0
+        strip_new_features = false
+      end
+
+      if strip_new_features
+        stripped_entries = value.select{|x| x.include?('=')}
+        value = value - stripped_entries
+
+        unless stripped_entries.empty?
+          debug "Auto-stripped the following entries due to the installed version of 'incrond': #{stripped_entries.join(', ')}"
+        end
+      end
+
+      value.sort.uniq.join(',')
     end
 
     validate do |value|
