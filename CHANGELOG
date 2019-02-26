@@ -1,3 +1,8 @@
+* Tue Feb 26 2019 Liz Nemsick <lnemsick.simp@gmail.com> - 0.4.1-0
+- Fixed a bug in the incrond_version fact in which an error message
+  was displayed during fact resolution, on systems for which incron
+  was not installed.
+
 * Sun Jan 20 2019 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.4.0-0
 - Add the ability to set the 'max_open_files' ulimit
 - Add Incron::Mask Data Type denoting valid incron masks
