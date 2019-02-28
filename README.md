@@ -18,7 +18,7 @@
 
 ## Description
 
-This module manages the incron packges, service, and /etc/incron.allow.
+This module manages the incron packages, service, and /etc/incron.allow.
 
 
 ### This is a SIMP module
@@ -95,7 +95,7 @@ SIMP Puppet modules are generally intended for use on Red Hat Enterprise Linux a
 
 ## Development
 
-Please read our [Contribution Guide] (http://simp-doc.readthedocs.io/en/stable/contributors_guide/index.html).
+Please read our [Contribution Guide] (http://simp.readthedocs.io/en/stable/contributors_guide/index.html).
 
 
 ### Acceptance tests

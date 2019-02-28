@@ -2,7 +2,7 @@
 
 Facter.add('incrond_version') do
   incrond_cmd = Facter::Util::Resolution.which('incrond')
-  confine { File.executable?(incrond_cmd) }
+  confine { incrond_cmd && File.executable?(incrond_cmd) }
 
   setcode do
     require 'open3'
