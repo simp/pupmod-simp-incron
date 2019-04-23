@@ -1,3 +1,6 @@
+* Tue Apr 23 2019 Joseph Sharkey <shark.bruhaha@gmail.com> - 0.4.2-0
+- Updated .travis.yml, .gitlab-ci.yml, .ruby-version
+
 * Tue Feb 26 2019 Liz Nemsick <lnemsick.simp@gmail.com> - 0.4.1-0
 - Fixed a bug in the incrond_version fact in which an error message
   was displayed during fact resolution, on systems for which incron
