@@ -1,3 +1,6 @@
+* Fri Aug 02 2019 Robert Vincent <pillarsdotnet@gmail.com> - 0.4.2-0
+- Support puppetlabs/concat 6.x, puppetlabs/stdlib 6.x, and puppet 6.x.
+
 * Tue Feb 26 2019 Liz Nemsick <lnemsick.simp@gmail.com> - 0.4.1-0
 - Fixed a bug in the incrond_version fact in which an error message
   was displayed during fact resolution, on systems for which incron
