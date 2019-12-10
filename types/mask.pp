@@ -1,3 +1,4 @@
+# @summary Valid incron masks
 type Incron::Mask = Enum[
   'IN_ACCESS',
   'IN_ALL_EVENTS',

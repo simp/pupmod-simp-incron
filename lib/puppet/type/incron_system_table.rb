@@ -15,6 +15,8 @@ Puppet::Type.newtype(:incron_system_table) do
   EOM
 
   ensurable do
+    desc 'The state that should be enforced for the table'
+
     defaultvalues
     defaultto :present
   end

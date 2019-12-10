@@ -20,6 +20,10 @@
 
 This module manages the incron packages, service, and /etc/incron.allow.
 
+**WARNING:**
+
+> There were issues in early versions of incron 0.5.12. Please ensure that you
+> are using at least version 0.5.12-10 or later on EL 7+.
 
 ### This is a SIMP module
 
@@ -40,7 +44,6 @@ If you run into problems, please let us know by filing an issue at
 https://simp-project.atlassian.net/.
 
 ## Setup
-
 
 ### What incron affects
 

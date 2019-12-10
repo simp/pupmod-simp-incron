@@ -5,10 +5,6 @@
 #   The ``ensure`` parameter of ``Package`` resources in the ``incron``
 #   namespace.
 #
-#   See Module Data for defaults
-#
-#   WARNING: Do NOT change this unless you've 100% tested your system!
-#
 # @param users
 #   An Array of additional incron users, using the defined type
 #   incron::user.
@@ -28,11 +24,11 @@
 #   Whether or not to purge unknown incron tables
 #
 class incron (
-  String[1]                             $package_ensure,
   Array[String[1]]                      $users          = [],
   Hash                                  $system_table   = {},
   Variant[Enum['unlimited'],Integer[0]] $max_open_files = 'unlimited',
   Boolean                               $purge          = false,
+  String                                $package_ensure = simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' })
 ) {
   package { 'incron': ensure => $package_ensure }
 

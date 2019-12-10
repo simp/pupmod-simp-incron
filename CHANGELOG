@@ -1,3 +1,7 @@
+* Tue Dec 10 2019 Trevor Vaughan <tvaughan@onyxpoint.com> - 0.5.0-0
+- Add EL8 support
+- Remove pinned versions of incron since the upstream packages have been fixed
+
 * Fri Aug 02 2019 Robert Vincent <pillarsdotnet@gmail.com> - 0.5.0-0
 - Remove Puppet 4 support
 - Add Puppet 6 support
