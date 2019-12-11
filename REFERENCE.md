@@ -17,6 +17,10 @@
 
 * [`incron_system_table`](#incron_system_table): Creates an 'incrond' compatible system table  Line order will be preserved  Any paths that contain globs '*' will be expanded into the approp
 
+**Data types**
+
+* [`Incron::Mask`](#incronmask): Valid incron masks
+
 ## Classes
 
 ### incron
@@ -30,14 +34,12 @@ The following parameters are available in the `incron` class.
 
 ##### `package_ensure`
 
-Data type: `String[1]`
+Data type: `String`
 
 The ``ensure`` parameter of ``Package`` resources in the ``incron``
 namespace.
 
-See Module Data for defaults
-
-WARNING: Do NOT change this unless you've 100% tested your system!
+Default value: simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' })
 
 ##### `users`
 
@@ -202,7 +204,7 @@ The following properties are available in the `incron_system_table` type.
 
 Valid values: present, absent
 
-The basic property that the resource should be in.
+The state that should be enforced for the table
 
 Default value: present
 
@@ -234,4 +236,12 @@ lines that contain all possible combinations
 ##### `content`
 
 Raw content to add to the file - Will be validated
+
+## Data types
+
+### Incron::Mask
+
+Valid incron masks
+
+Alias of `Enum['IN_ACCESS', 'IN_ALL_EVENTS', 'IN_ATTRIB', 'IN_CLOSE', 'IN_CLOSE_NOWRITE', 'IN_CLOSE_WRITE', 'IN_CREATE', 'IN_DELETE', 'IN_DELETE_SELF', 'IN_DONT_FOLLOW', 'IN_MODIFY', 'IN_MOVE', 'IN_MOVED_FROM', 'IN_MOVED_TO', 'IN_MOVE_SELF', 'IN_NO_LOOP', 'IN_ONESHOT', 'IN_ONLYDIR', 'IN_OPEN', 'loopable=true', 'recursive=false', 'dotdirs=true']`
 

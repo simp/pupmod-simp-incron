@@ -10,9 +10,8 @@ describe 'incron' do
         it { is_expected.to create_class('incron') }
         it { is_expected.to create_incron__user('root') }
         it { is_expected.to create_concat('/etc/incron.allow') }
-        it { is_expected.to create_file('/etc/incron.deny').with({:ensure => 'absent'}) }
-        it { is_expected.to create_package('incron').with_ensure(/0.5.\d+/) }
-        it { is_expected.to create_package('incron').without_ensure('0.5.12') }
+        it { is_expected.to create_file('/etc/incron.deny').with_ensure('absent') }
+        it { is_expected.to create_package('incron').with_ensure('installed') }
         it { is_expected.to create_init_ulimit('mod_open_files_incrond').with_value('unlimited') }
         it { is_expected.to create_service('incrond').with({
           :ensure     => 'running',
