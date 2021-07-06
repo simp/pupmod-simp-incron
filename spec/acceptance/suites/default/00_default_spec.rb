@@ -30,10 +30,6 @@ describe 'incron class' do
         "#{host.puppet[:environmentpath]}/production/modules/incron/lib/test"
       }
 
-      it 'should install the EPEL repo' do
-        install_package(host, 'epel-release')
-      end
-
       it 'should work with default values' do
         apply_manifest_on(host, manifest, catch_failures: true)
       end
