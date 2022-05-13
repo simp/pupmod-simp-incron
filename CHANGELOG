@@ -1,3 +1,6 @@
+* Fri May 13 2022 Brian Schonecker <brian.schonecker@nfiindustries.com> - 0.6.1
+- Ensure that incron files are deleted when `purge` is `true`
+
 * Tue Jun 15 2021 Chris Tessmer <chris.tessmer@onyxpoint.com> - 0.6.0
 - Removed support for Puppet 5
 - Ensured support for Puppet 7 in requirements and stdlib

@@ -72,9 +72,11 @@ incron::users:
 ```
 
 New system table entries can be added to `/etc/incron.d/` directory with the `incron::system_table` defined type, or
-with the `incron::system_table` hash in hiera. The following example adds two new system table entries to `/etc/incron.d/` directory:
+with the `incron::system_table` hash in hiera. The following example adds two new system table entries to `/etc/incron.d/` 
+directory and removes unmanaged files: 
 
 ```yaml
+incron::purge: true
 incron::system_table:
   allowrw:
     path: '/data/'

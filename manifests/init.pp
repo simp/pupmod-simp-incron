@@ -59,11 +59,12 @@ class incron (
   }
 
   file { '/etc/incron.d':
-    ensure => 'directory',
-    owner  => 'root',
-    group  => 'root',
-    mode   => '0755',
-    purge  => $purge
+    ensure  => 'directory',
+    owner   => 'root',
+    group   => 'root',
+    mode    => '0755',
+    purge   => $purge,
+    recurse => $purge
   }
 
   init_ulimit { 'mod_open_files_incrond':
