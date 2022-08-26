@@ -1,3 +1,6 @@
+* Thu Aug 25 2022 Brian Schonecker <brian.schonecker@nfiindustries.com> - 0.6.2
+- Prevent Puppet from purging files created with `incron::system_table`
+
 * Fri May 13 2022 Brian Schonecker <brian.schonecker@nfiindustries.com> - 0.6.1
 - Ensure that incron files are deleted when `purge` is `true`
 

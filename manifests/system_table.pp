@@ -64,8 +64,9 @@ define incron::system_table (
 
   $_ensure = $enable ? { true => 'present', default => 'absent' }
 
-  # We need to inform the Puppet parser that we're creating files with the custom type, otherwise Puppet will
-  # purge the /etc/incron.d directory of all files and then the custom type will recreate them resulting in
+  # We need to inform the Puppet parser that we're creating files with the
+  # custom type, otherwise Puppet will purge the /etc/incron.d directory of
+  # all files and then the custom type will recreate them resulting in
   # a non-idempotent loop.
   file { "/etc/incron.d/${name}":
     ensure => file,
