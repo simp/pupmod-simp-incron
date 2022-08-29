@@ -16,6 +16,9 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
 
       File.stubs(:read).with('/etc/incron.conf').
         returns("system_table_dir = #{@tmpdir}")
+
+      # Must be mocked, but does't really matter what it returns in these tests
+      Facter.stubs(:value).with(:incrond_version)
     end
 
     after(:each) do
