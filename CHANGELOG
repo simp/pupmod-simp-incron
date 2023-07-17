@@ -1,3 +1,6 @@
+* Mon Jun 12 2023 Chris Tessmer <chris.tessmer@onyxpoint.com> - 0.7.0
+- Add RockyLinux 8 support
+
 * Thu Aug 25 2022 Brian Schonecker <brian.schonecker@nfiindustries.com> - 0.6.2
 - Prevent Puppet from purging files created with `incron::system_table`
 
