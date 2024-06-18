@@ -15,7 +15,7 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
       FileUtils.mkdir_p(File.join(@tmpdir, 'other', 'is', '3', 'test'))
 
       allow(File).to receive(:read).with('/etc/incron.conf').
-        returns("system_table_dir = #{@tmpdir}")
+        and_return("system_table_dir = #{@tmpdir}")
 
       # Must be mocked, but does't really matter what it returns in these tests
       allow(Facter).to receive(:value).with(:incrond_version)
@@ -53,7 +53,7 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
           it do
             allow(File).to receive(:readable?).with(File.join(@tmpdir, resource_name)).and_return(true)
             allow(File).to receive(:read).with(File.join(@tmpdir, resource_name)).
-              returns("#{path} #{mask} #{command}")
+              and_return("#{path} #{mask} #{command}")
 
             expect(provider.exists?).to be true
           end
@@ -71,7 +71,7 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
           it do
             allow(File).to receive(:readable?).with(File.join(@tmpdir, resource_name)).and_return(true)
             allow(File).to receive(:read).with(File.join(@tmpdir, resource_name)).
-              returns("#{path} #{mask} #{command} and stuff")
+              and_return("#{path} #{mask} #{command} and stuff")
 
             expect(provider.exists?).to be false
           end
