@@ -14,11 +14,11 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
       FileUtils.mkdir_p(File.join(@tmpdir, 'that', 'is', '2', 'test'))
       FileUtils.mkdir_p(File.join(@tmpdir, 'other', 'is', '3', 'test'))
 
-      File.stubs(:read).with('/etc/incron.conf').
-        returns("system_table_dir = #{@tmpdir}")
+      allow(File).to receive(:read).with('/etc/incron.conf').
+        and_return("system_table_dir = #{@tmpdir}")
 
       # Must be mocked, but does't really matter what it returns in these tests
-      Facter.stubs(:value).with(:incrond_version)
+      allow(Facter).to receive(:value).with(:incrond_version)
     end
 
     after(:each) do
@@ -51,9 +51,9 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
       context 'does exist' do
         context 'does match' do
           it do
-            File.stubs(:readable?).with(File.join(@tmpdir, resource_name)).returns(true)
-            File.stubs(:read).with(File.join(@tmpdir, resource_name)).
-              returns("#{path} #{mask} #{command}")
+            allow(File).to receive(:readable?).with(File.join(@tmpdir, resource_name)).and_return(true)
+            allow(File).to receive(:read).with(File.join(@tmpdir, resource_name)).
+              and_return("#{path} #{mask} #{command}")
 
             expect(provider.exists?).to be true
           end
@@ -61,7 +61,7 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
 
         context 'is not readable' do
           it do
-            File.stubs(:readable?).with(File.join(@tmpdir, resource_name)).returns(false)
+            allow(File).to receive(:readable?).with(File.join(@tmpdir, resource_name)).and_return(false)
 
             expect(provider.exists?).to be false
           end
@@ -69,9 +69,9 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
 
         context 'does not match' do
           it do
-            File.stubs(:readable?).with(File.join(@tmpdir, resource_name)).returns(true)
-            File.stubs(:read).with(File.join(@tmpdir, resource_name)).
-              returns("#{path} #{mask} #{command} and stuff")
+            allow(File).to receive(:readable?).with(File.join(@tmpdir, resource_name)).and_return(true)
+            allow(File).to receive(:read).with(File.join(@tmpdir, resource_name)).
+              and_return("#{path} #{mask} #{command} and stuff")
 
             expect(provider.exists?).to be false
           end

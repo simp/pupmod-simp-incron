@@ -79,7 +79,7 @@ describe incron_system_table_type do
 
           context 'on a system with no incrond_version fact' do
             it 'should strip out the new parameters' do
-              Facter.stubs(:value).with(:incrond_version).returns(nil)
+              allow(Facter).to receive(:value).with(:incrond_version).and_return(nil)
 
               resource = incron_system_table_type.new(
                 :name    => name,
@@ -94,7 +94,7 @@ describe incron_system_table_type do
 
           context 'on a system with an older version of incrond' do
             it 'should strip out the new parameters' do
-              Facter.stubs(:value).with(:incrond_version).returns('0.5.10')
+              allow(Facter).to receive(:value).with(:incrond_version).and_return('0.5.10')
 
               resource = incron_system_table_type.new(
                 :name    => name,
@@ -109,7 +109,7 @@ describe incron_system_table_type do
 
           context 'on a system with 0.5.12' do
             it 'should retain the new parameters' do
-              Facter.stubs(:value).with(:incrond_version).returns('0.5.12')
+              allow(Facter).to receive(:value).with(:incrond_version).and_return('0.5.12')
 
               resource = incron_system_table_type.new(
                 :name    => name,
@@ -124,7 +124,7 @@ describe incron_system_table_type do
 
           context 'on a system with incrond newer than 0.5.12' do
             it 'should retain the new parameters' do
-              Facter.stubs(:value).with(:incrond_version).returns('0.5.13')
+              allow(Facter).to receive(:value).with(:incrond_version).and_return('0.5.13')
 
               resource = incron_system_table_type.new(
                 :name    => name,
