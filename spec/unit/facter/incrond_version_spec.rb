@@ -2,7 +2,6 @@ require 'spec_helper'
 require 'open3'
 
 describe 'incrond_version' do
-
   before :each do
     Facter.clear
   end

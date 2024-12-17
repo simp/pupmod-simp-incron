@@ -9,7 +9,7 @@ Puppet::Type.type(:incron_system_table).provide(:manage) do
     # Find out where to read the files from and fall back to the default if
     # nothing is found
     begin
-      @incron_dir = File.read('/etc/incron.conf').lines.grep(/^\s*system_table_dir\s*=/).first.split('=').last.strip
+      @incron_dir = File.read('/etc/incron.conf').lines.grep(%r{^\s*system_table_dir\s*=}).first.split('=').last.strip
     rescue
       @incron_dir = '/etc/incron.d'
     end
@@ -24,15 +24,13 @@ Puppet::Type.type(:incron_system_table).provide(:manage) do
 
     return false unless File.readable?(@target_file)
 
-    return (@new_content == File.read(@target_file).strip)
+    (@new_content == File.read(@target_file).strip)
   end
 
   def create
-    begin
-      File.open(@target_file, 'w'){|fh| fh.puts(@new_content)}
-    rescue => e
-      raise(Puppet::Error, "incron_system_table: Could not write to '#{@target_file}': #{e}")
-    end
+    File.open(@target_file, 'w') { |fh| fh.puts(@new_content) }
+  rescue => e
+    raise(Puppet::Error, "incron_system_table: Could not write to '#{@target_file}': #{e}")
   end
 
   def destroy
@@ -55,14 +53,12 @@ Puppet::Type.type(:incron_system_table).provide(:manage) do
     return [] if path.start_with?('/**')
 
     begin
-      if path.include?('*')
-        return Dir.glob(path)
-      else
-        return [path]
-      end
+      return Dir.glob(path) if path.include?('*')
+
+      [path]
     rescue
       Puppet.debug("incron_system_table: Error occurred processing '#{path}': #{e}")
-      return []
+      []
     end
   end
 
@@ -91,6 +87,6 @@ Puppet::Type.type(:incron_system_table).provide(:manage) do
       end
     end
 
-    return content.join("\n")
+    content.join("\n")
   end
 end

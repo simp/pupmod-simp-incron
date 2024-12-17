@@ -14,8 +14,8 @@ describe incron_system_table_type do
   context 'with valid' do
     it 'disabling of the resource' do
       resource = incron_system_table_type.new(
-        :name    => name,
-        :ensure => 'absent'
+        name: name,
+        ensure: 'absent',
       )
 
       expect(resource[:name]).to eq(name)
@@ -23,8 +23,8 @@ describe incron_system_table_type do
 
     it 'name and content parameters' do
       resource = incron_system_table_type.new(
-        :name    => name,
-        :content => content
+        name: name,
+        content: content,
       )
 
       expect(resource[:name]).to eq(name)
@@ -32,8 +32,8 @@ describe incron_system_table_type do
 
     it 'content as an Array' do
       resource = incron_system_table_type.new(
-        :name    => name,
-        :content => [ content, "#{content}\n#{content}"]
+        name: name,
+        content: [ content, "#{content}\n#{content}"],
       )
 
       expect(resource[:name]).to eq(name)
@@ -41,12 +41,12 @@ describe incron_system_table_type do
     end
 
     context 'name, path, mask, and command parameters' do
-      it 'should pass' do
+      it 'passes' do
         resource = incron_system_table_type.new(
-          :name    => name,
-          :path    => path,
-          :mask    => mask,
-          :command => command
+          name: name,
+          path: path,
+          mask: mask,
+          command: command,
         )
 
         expect(resource[:name]).to eq(name)
@@ -60,12 +60,12 @@ describe incron_system_table_type do
         let(:mask)    { ['IN_MODIFY', 'IN_CREATE'] }
         let(:command) { ['/bar/baz', '/bar2/baz2'] }
 
-        it 'should pass' do
+        it 'passes' do
           resource = incron_system_table_type.new(
-            :name    => name,
-            :path    => path,
-            :mask    => mask.join(','),
-            :command => command
+            name: name,
+            path: path,
+            mask: mask.join(','),
+            command: command,
           )
 
           expect(resource[:name]).to eq(name)
@@ -78,44 +78,44 @@ describe incron_system_table_type do
           let(:mask)    { ['IN_MODIFY', 'IN_CREATE', 'loopable=true', 'recursive=false', 'dotdirs=true'] }
 
           context 'on a system with no incrond_version fact' do
-            it 'should strip out the new parameters' do
+            it 'strips out the new parameters' do
               allow(Facter).to receive(:value).with(:incrond_version).and_return(nil)
 
               resource = incron_system_table_type.new(
-                :name    => name,
-                :path    => path,
-                :mask    => mask.join(','),
-                :command => command
+                name: name,
+                path: path,
+                mask: mask.join(','),
+                command: command,
               )
 
-              expect(resource[:mask]).to eq(mask.delete_if{|x| x.include?('=')}.sort.join(','))
+              expect(resource[:mask]).to eq(mask.delete_if { |x| x.include?('=') }.sort.join(','))
             end
           end
 
           context 'on a system with an older version of incrond' do
-            it 'should strip out the new parameters' do
+            it 'strips out the new parameters' do
               allow(Facter).to receive(:value).with(:incrond_version).and_return('0.5.10')
 
               resource = incron_system_table_type.new(
-                :name    => name,
-                :path    => path,
-                :mask    => mask.join(','),
-                :command => command
+                name: name,
+                path: path,
+                mask: mask.join(','),
+                command: command,
               )
 
-              expect(resource[:mask]).to eq(mask.delete_if{|x| x.include?('=')}.sort.join(','))
+              expect(resource[:mask]).to eq(mask.delete_if { |x| x.include?('=') }.sort.join(','))
             end
           end
 
           context 'on a system with 0.5.12' do
-            it 'should retain the new parameters' do
+            it 'retains the new parameters' do
               allow(Facter).to receive(:value).with(:incrond_version).and_return('0.5.12')
 
               resource = incron_system_table_type.new(
-                :name    => name,
-                :path    => path,
-                :mask    => mask.join(','),
-                :command => command
+                name: name,
+                path: path,
+                mask: mask.join(','),
+                command: command,
               )
 
               expect(resource[:mask]).to eq(mask.sort.join(','))
@@ -123,14 +123,14 @@ describe incron_system_table_type do
           end
 
           context 'on a system with incrond newer than 0.5.12' do
-            it 'should retain the new parameters' do
+            it 'retains the new parameters' do
               allow(Facter).to receive(:value).with(:incrond_version).and_return('0.5.13')
 
               resource = incron_system_table_type.new(
-                :name    => name,
-                :path    => path,
-                :mask    => mask.join(','),
-                :command => command
+                name: name,
+                path: path,
+                mask: mask.join(','),
+                command: command,
               )
 
               expect(resource[:mask]).to eq(mask.sort.join(','))
@@ -145,13 +145,13 @@ describe incron_system_table_type do
     [:path, :mask, :command].each do |param|
       context ":content and :#{param}" do
         it do
-          expect{
+          expect {
             incron_system_table_type.new(
               :name => name,
               :content => content,
-              param => self.send(param)
+              param => send(param),
             )
-          }.to raise_error(/You cannot specify/)
+          }.to raise_error(%r{You cannot specify})
         end
       end
     end
@@ -160,45 +160,45 @@ describe incron_system_table_type do
   context 'with missing' do
     context ':path' do
       it do
-        expect{
+        expect {
           incron_system_table_type.new(
-            :name    => name,
-            :mask    => mask,
-            :command => command
+            name: name,
+            mask: mask,
+            command: command,
           )
-        }.to raise_exception(/You must specify either/)
+        }.to raise_exception(%r{You must specify either})
       end
     end
 
     context ':mask' do
       it do
-        expect{
+        expect {
           incron_system_table_type.new(
-            :name    => name,
-            :path    => path,
-            :command => command
+            name: name,
+            path: path,
+            command: command,
           )
-        }.to raise_exception(/You must specify either/)
+        }.to raise_exception(%r{You must specify either})
       end
     end
 
     context ':command' do
       it do
-        expect{
+        expect {
           incron_system_table_type.new(
-            :name    => name,
-            :path    => path,
-            :mask    => mask
+            name: name,
+            path: path,
+            mask: mask,
           )
-        }.to raise_exception(/You must specify either/)
+        }.to raise_exception(%r{You must specify either})
       end
     end
 
     context ':content' do
       it do
-        expect{
-          incron_system_table_type.new( :name => name )
-        }.to raise_exception(/You must specify either/)
+        expect {
+          incron_system_table_type.new(name: name)
+        }.to raise_exception(%r{You must specify either})
       end
     end
   end

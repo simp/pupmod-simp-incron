@@ -26,7 +26,6 @@ Puppet::Type.newtype(:incron_system_table) do
     desc 'The filename to use for the table - Non-word characters will be replaced'
 
     munge do |value|
-
       # This is here for the use of later parameters and properties
       @valid_incron_masks = [
         'IN_ACCESS',
@@ -50,15 +49,15 @@ Puppet::Type.newtype(:incron_system_table) do
         'IN_OPEN',
         'loopable=true',
         'recursive=false',
-        'dotdirs=true'
+        'dotdirs=true',
       ]
       self.class.send(:attr_reader, 'valid_incron_masks')
 
-      value.split(/\W+/).join('__')
+      value.split(%r{\W+}).join('__')
     end
   end
 
-  newparam(:path, :array_matching => :all, :parent => Puppet::Parameter::Path) do
+  newparam(:path, array_matching: :all, parent: Puppet::Parameter::Path) do
     desc 'Path(s) to watch and apply the `command`'
 
     accept_arrays(true)
@@ -68,7 +67,7 @@ Puppet::Type.newtype(:incron_system_table) do
     end
   end
 
-  newparam(:mask, :array_matching => :all) do
+  newparam(:mask, array_matching: :all) do
     desc 'The incron "masks" to apply'
 
     munge do |value|
@@ -85,8 +84,8 @@ Puppet::Type.newtype(:incron_system_table) do
       end
 
       if strip_new_features
-        stripped_entries = value.select{|x| x.include?('=')}
-        value = value - stripped_entries
+        stripped_entries = value.select { |x| x.include?('=') }
+        value -= stripped_entries
 
         unless stripped_entries.empty?
           debug "Auto-stripped the following entries due to the installed version of 'incrond': #{stripped_entries.join(', ')}"
@@ -107,7 +106,7 @@ Puppet::Type.newtype(:incron_system_table) do
     end
   end
 
-  newparam(:command, :array_matching => :all, :parent => Puppet::Parameter::Path) do
+  newparam(:command, array_matching: :all, parent: Puppet::Parameter::Path) do
     desc <<-EOM
     The command(s) to apply when the paths change
 
@@ -122,24 +121,24 @@ Puppet::Type.newtype(:incron_system_table) do
     end
   end
 
-  newparam(:content, :array_matching => :all) do
+  newparam(:content, array_matching: :all) do
     desc 'Raw content to add to the file - Will be validated'
 
     errors = []
 
     validate do |values|
       Array(values).each do |value|
-        path, mask, command = value.split(/\s+/)
+        path, mask, command = value.split(%r{\s+})
 
-        unless (path && path.start_with?('/'))
+        unless path&.start_with?('/')
           errors << "Path '#{path}' is not an absolute path"
         end
 
-        unless (mask && (mask.split(',') -  resource.parameters[:name].valid_incron_masks).empty?)
+        unless mask && (mask.split(',') - resource.parameters[:name].valid_incron_masks).empty?
           errors << %(Masks must be some combination of '#{resource.parameters[:name].valid_incron_masks.join("', '")}')
         end
 
-        unless (command && command.start_with?('/'))
+        unless command&.start_with?('/')
           errors << "Command '#{command}' is not an absolute path"
         end
       end
@@ -153,11 +152,11 @@ Puppet::Type.newtype(:incron_system_table) do
   validate do
     unless self[:ensure] == :absent
       unless self[:content] || (self[:path] && self[:mask] && self[:command])
-        raise(Puppet::Error,'You must specify either "content" or "path", "mask", and "command"')
+        raise(Puppet::Error, 'You must specify either "content" or "path", "mask", and "command"')
       end
 
       if self[:content] && (self[:path] || self[:mask] || self[:command])
-        raise(Puppet::Error,'You cannot specify "content" with "path", "mask", or "command"')
+        raise(Puppet::Error, 'You cannot specify "content" with "path", "mask", or "command"')
       end
     end
   end
@@ -170,23 +169,18 @@ Puppet::Type.newtype(:incron_system_table) do
     to_req = []
 
     # Require all commands that we're going to run
-    if self[:command]
-      self[:command].each do |cmd|
-        unless cmd.include?('*')
-          to_req << cmd
-        end
+    self[:command]&.each do |cmd|
+      unless cmd.include?('*')
+        to_req << cmd
       end
     end
 
     # Grab the commands out of 'content' lines and required those as well
-    if self[:content]
-      self[:content].join.each_line do |content|
+    self[:content]&.join&.each_line do |content|
+      cmd = content.split(%r{\s+})[2]
 
-        cmd = content.split(/\s+/)[2]
-
-        unless cmd.include?('*')
-          to_req << cmd
-        end
+      unless cmd.include?('*')
+        to_req << cmd
       end
     end
 
