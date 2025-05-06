@@ -6,23 +6,15 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
   end
 
   context 'working examples' do
-    before(:each) do
-      @tmpdir = Dir.mktmpdir('incron_system_table')
+    let(:tmpdir) do
+      tmp = Dir.mktmpdir('incron_system_table')
 
       # Set up some glob search scaffolding
-      FileUtils.mkdir_p(File.join(@tmpdir, 'this', 'is', '1', 'test'))
-      FileUtils.mkdir_p(File.join(@tmpdir, 'that', 'is', '2', 'test'))
-      FileUtils.mkdir_p(File.join(@tmpdir, 'other', 'is', '3', 'test'))
+      FileUtils.mkdir_p(File.join(tmp, 'this', 'is', '1', 'test'))
+      FileUtils.mkdir_p(File.join(tmp, 'that', 'is', '2', 'test'))
+      FileUtils.mkdir_p(File.join(tmp, 'other', 'is', '3', 'test'))
 
-      allow(File).to receive(:read).with('/etc/incron.conf')
-                                   .and_return("system_table_dir = #{@tmpdir}")
-
-      # Must be mocked, but does't really matter what it returns in these tests
-      allow(Facter).to receive(:value).with(:incrond_version)
-    end
-
-    after(:each) do
-      FileUtils.remove_dir(@tmpdir) if File.exist?(@tmpdir)
+      tmp
     end
 
     let(:resource_name) { 'foo' }
@@ -41,7 +33,20 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
 
     let(:resource_output) { "#{path} #{Array(mask).join(',')} #{command}" }
 
-    let(:target) { File.join(@tmpdir, resource_name) }
+    let(:target) { File.join(tmpdir, resource_name) }
+
+    before(:each) do
+      allow(File).to receive(:read)
+        .with('/etc/incron.conf')
+        .and_return("system_table_dir = #{tmpdir}")
+
+      # Must be mocked, but does't really matter what it returns in these tests
+      allow(Facter).to receive(:value).with(:incrond_version)
+    end
+
+    after(:each) do
+      FileUtils.remove_dir(tmpdir) if Dir.exist?(tmpdir)
+    end
 
     context '#exists?' do
       it 'does not exist' do
@@ -51,8 +56,8 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
       context 'does exist' do
         context 'does match' do
           it do
-            allow(File).to receive(:readable?).with(File.join(@tmpdir, resource_name)).and_return(true)
-            allow(File).to receive(:read).with(File.join(@tmpdir, resource_name))
+            allow(File).to receive(:readable?).with(File.join(tmpdir, resource_name)).and_return(true)
+            allow(File).to receive(:read).with(File.join(tmpdir, resource_name))
                                          .and_return("#{path} #{mask} #{command}")
 
             expect(provider.exists?).to be true
@@ -61,7 +66,7 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
 
         context 'is not readable' do
           it do
-            allow(File).to receive(:readable?).with(File.join(@tmpdir, resource_name)).and_return(false)
+            allow(File).to receive(:readable?).with(File.join(tmpdir, resource_name)).and_return(false)
 
             expect(provider.exists?).to be false
           end
@@ -69,9 +74,10 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
 
         context 'does not match' do
           it do
-            allow(File).to receive(:readable?).with(File.join(@tmpdir, resource_name)).and_return(true)
-            allow(File).to receive(:read).with(File.join(@tmpdir, resource_name))
-                                         .and_return("#{path} #{mask} #{command} and stuff")
+            allow(File).to receive(:readable?).with(File.join(tmpdir, resource_name)).and_return(true)
+            allow(File).to receive(:read)
+              .with(File.join(tmpdir, resource_name))
+              .and_return("#{path} #{mask} #{command} and stuff")
 
             expect(provider.exists?).to be false
           end
@@ -94,12 +100,12 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
       end
 
       context 'with a path glob' do
-        let(:path) { File.join(@tmpdir, '**', 'is', '*') }
+        let(:path) { File.join(tmpdir, '**', 'is', '*') }
         let(:resource_output) do
           [
-            File.join(@tmpdir, 'other', 'is', '3') + " #{mask} #{command}",
-            File.join(@tmpdir, 'this', 'is', '1') + " #{mask} #{command}",
-            File.join(@tmpdir, 'that', 'is', '2') + " #{mask} #{command}",
+            File.join(tmpdir, 'other', 'is', '3') + " #{mask} #{command}",
+            File.join(tmpdir, 'this', 'is', '1') + " #{mask} #{command}",
+            File.join(tmpdir, 'that', 'is', '2') + " #{mask} #{command}",
           ].sort.join("\n")
         end
 
