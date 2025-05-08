@@ -14,8 +14,8 @@ describe 'incron::system_table' do
           let(:title) { 'path_and_command_test' }
           let(:params) do
             {
-              :path => '/some/valid/path',
-              :command => '/some/valid/command'
+              path: '/some/valid/path',
+              command: '/some/valid/command'
             }
           end
 
@@ -27,7 +27,7 @@ describe 'incron::system_table' do
           let(:title) { 'custom_content_test' }
           let(:params) do
             {
-              :custom_content => "totally valid incron content\n"
+              custom_content: "totally valid incron content\n"
             }
           end
 

@@ -1,6 +1,6 @@
 {
   "name": "simp-incron",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "author": "SIMP Team",
   "summary": "A SIMP Puppet module for managing incron",
   "license": "Apache-2.0",

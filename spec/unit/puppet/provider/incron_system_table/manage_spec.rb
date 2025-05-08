@@ -1,28 +1,20 @@
 require 'spec_helper'
 
 describe Puppet::Type.type(:incron_system_table).provider(:manage) do
-  let(:provider) {
+  let(:provider) do
     Puppet::Type.type(:incron_system_table).provider(:manage).new(resource)
-  }
+  end
 
   context 'working examples' do
-    before(:each) do
-      @tmpdir = Dir.mktmpdir('incron_system_table')
+    let(:tmpdir) do
+      tmp = Dir.mktmpdir('incron_system_table')
 
       # Set up some glob search scaffolding
-      FileUtils.mkdir_p(File.join(@tmpdir, 'this', 'is', '1', 'test'))
-      FileUtils.mkdir_p(File.join(@tmpdir, 'that', 'is', '2', 'test'))
-      FileUtils.mkdir_p(File.join(@tmpdir, 'other', 'is', '3', 'test'))
+      FileUtils.mkdir_p(File.join(tmp, 'this', 'is', '1', 'test'))
+      FileUtils.mkdir_p(File.join(tmp, 'that', 'is', '2', 'test'))
+      FileUtils.mkdir_p(File.join(tmp, 'other', 'is', '3', 'test'))
 
-      allow(File).to receive(:read).with('/etc/incron.conf').
-        and_return("system_table_dir = #{@tmpdir}")
-
-      # Must be mocked, but does't really matter what it returns in these tests
-      allow(Facter).to receive(:value).with(:incrond_version)
-    end
-
-    after(:each) do
-      FileUtils.remove_dir(@tmpdir) if File.exist?(@tmpdir)
+      tmp
     end
 
     let(:resource_name) { 'foo' }
@@ -30,18 +22,31 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
     let(:mask)          { 'IN_CREATE' }
     let(:command)       { '/bin/true' }
 
-    let(:resource) {
+    let(:resource) do
       Puppet::Type.type(:incron_system_table).new(
         name: resource_name,
         path: path,
         mask: mask,
-        command: command
+        command: command,
       )
-    }
+    end
 
     let(:resource_output) { "#{path} #{Array(mask).join(',')} #{command}" }
 
-    let(:target) { File.join(@tmpdir, resource_name) }
+    let(:target) { File.join(tmpdir, resource_name) }
+
+    before(:each) do
+      allow(File).to receive(:read)
+        .with('/etc/incron.conf')
+        .and_return("system_table_dir = #{tmpdir}")
+
+      # Must be mocked, but does't really matter what it returns in these tests
+      allow(Facter).to receive(:value).with(:incrond_version)
+    end
+
+    after(:each) do
+      FileUtils.remove_dir(tmpdir) if Dir.exist?(tmpdir)
+    end
 
     context '#exists?' do
       it 'does not exist' do
@@ -51,9 +56,9 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
       context 'does exist' do
         context 'does match' do
           it do
-            allow(File).to receive(:readable?).with(File.join(@tmpdir, resource_name)).and_return(true)
-            allow(File).to receive(:read).with(File.join(@tmpdir, resource_name)).
-              and_return("#{path} #{mask} #{command}")
+            allow(File).to receive(:readable?).with(File.join(tmpdir, resource_name)).and_return(true)
+            allow(File).to receive(:read).with(File.join(tmpdir, resource_name))
+                                         .and_return("#{path} #{mask} #{command}")
 
             expect(provider.exists?).to be true
           end
@@ -61,7 +66,7 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
 
         context 'is not readable' do
           it do
-            allow(File).to receive(:readable?).with(File.join(@tmpdir, resource_name)).and_return(false)
+            allow(File).to receive(:readable?).with(File.join(tmpdir, resource_name)).and_return(false)
 
             expect(provider.exists?).to be false
           end
@@ -69,9 +74,10 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
 
         context 'does not match' do
           it do
-            allow(File).to receive(:readable?).with(File.join(@tmpdir, resource_name)).and_return(true)
-            allow(File).to receive(:read).with(File.join(@tmpdir, resource_name)).
-              and_return("#{path} #{mask} #{command} and stuff")
+            allow(File).to receive(:readable?).with(File.join(tmpdir, resource_name)).and_return(true)
+            allow(File).to receive(:read)
+              .with(File.join(tmpdir, resource_name))
+              .and_return("#{path} #{mask} #{command} and stuff")
 
             expect(provider.exists?).to be false
           end
@@ -86,7 +92,7 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
       end
 
       it do
-        expect{provider.create}.to_not raise_error
+        expect { provider.create }.not_to raise_error
         expect(File.readable?(target)).to be true
 
         # Work around the stubs with IO
@@ -94,17 +100,17 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
       end
 
       context 'with a path glob' do
-        let(:path) { File.join(@tmpdir, '**', 'is', '*') }
-        let(:resource_output){
+        let(:path) { File.join(tmpdir, '**', 'is', '*') }
+        let(:resource_output) do
           [
-            File.join(@tmpdir, 'other', 'is', '3') + " #{mask} #{command}",
-            File.join(@tmpdir, 'this', 'is', '1') + " #{mask} #{command}",
-            File.join(@tmpdir, 'that', 'is', '2') + " #{mask} #{command}",
+            File.join(tmpdir, 'other', 'is', '3') + " #{mask} #{command}",
+            File.join(tmpdir, 'this', 'is', '1') + " #{mask} #{command}",
+            File.join(tmpdir, 'that', 'is', '2') + " #{mask} #{command}",
           ].sort.join("\n")
-        }
+        end
 
         it do
-          expect{provider.create}.to_not raise_error
+          expect { provider.create }.not_to raise_error
           expect(IO.read(target).lines.sort.join.strip).to eq(resource_output)
         end
       end
@@ -113,37 +119,37 @@ describe Puppet::Type.type(:incron_system_table).provider(:manage) do
         let(:mask) { ['IN_CREATE', 'IN_NO_LOOP'] }
 
         it do
-          expect{provider.create}.to_not raise_error
+          expect { provider.create }.not_to raise_error
           expect(IO.read(target).strip).to eq(resource_output)
         end
 
         context 'with a multi-part path' do
           let(:path) { ['/foo/bar', '/foo2/bar2'] }
-          let(:resource_output){
+          let(:resource_output) do
             [
               "/foo/bar #{Array(mask).join(',')} #{command}",
-              "/foo2/bar2 #{Array(mask).join(',')} #{command}"
+              "/foo2/bar2 #{Array(mask).join(',')} #{command}",
             ].join("\n")
-          }
+          end
 
           it do
-            expect{provider.create}.to_not raise_error
+            expect { provider.create }.not_to raise_error
             expect(IO.read(target).strip).to eq(resource_output)
           end
 
           context 'with a multi-part command' do
             let(:command) { ['/bin/cmd', '/bin/cmd2'] }
-            let(:resource_output){
+            let(:resource_output) do
               [
                 "/foo/bar #{Array(mask).join(',')} /bin/cmd",
                 "/foo/bar #{Array(mask).join(',')} /bin/cmd2",
                 "/foo2/bar2 #{Array(mask).join(',')} /bin/cmd",
-                "/foo2/bar2 #{Array(mask).join(',')} /bin/cmd2"
+                "/foo2/bar2 #{Array(mask).join(',')} /bin/cmd2",
               ].join("\n")
-            }
+            end
 
             it do
-              expect{provider.create}.to_not raise_error
+              expect { provider.create }.not_to raise_error
               expect(IO.read(target).strip).to eq(resource_output)
             end
           end

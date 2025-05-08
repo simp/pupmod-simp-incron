@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'incron' do
   on_supported_os.each do |os, os_facts|
     context "on #{os}" do
-      let(:facts){ os_facts }
+      let(:facts) { os_facts }
 
       context 'with default parameters' do
         it { is_expected.to compile.with_all_deps }
@@ -13,30 +13,38 @@ describe 'incron' do
         it { is_expected.to create_file('/etc/incron.deny').with_ensure('absent') }
         it { is_expected.to create_package('incron').with_ensure('installed') }
         it { is_expected.to create_init_ulimit('mod_open_files_incrond').with_value('unlimited') }
-        it { is_expected.to create_service('incrond').with({
-          :ensure     => 'running',
-          :enable     => true,
-          :hasstatus  => true,
-          :hasrestart => false
-        }) }
+        it {
+          is_expected.to create_service('incrond').with({
+                                                          ensure: 'running',
+          enable: true,
+          hasstatus: true,
+          hasrestart: false
+                                                        })
+        }
       end
 
       context 'with a users parameter' do
-        let(:params) {{
-          :users => ['test','foo','bar']
-        }}
+        let(:params) do
+          {
+            users: ['test', 'foo', 'bar']
+          }
+        end
+
         it { is_expected.to create_incron__user('test') }
         it { is_expected.to create_incron__user('foo') }
         it { is_expected.to create_incron__user('bar') }
       end
 
       context 'with a system_table parameter' do
-        let(:params) {{
-          :system_table => {
-            :allowrw   => {:path => '/data/', :command => '/usr/bin/chmod -R 774 $@/$#', :mask => ['IN_CREATE']},
-            :deletelog => {:path => '/var/run/', :command => '/usr/bin/rm /var/log/daemon.log', :mask => ['IN_DELETE']}
+        let(:params) do
+          {
+            system_table: {
+              allowrw: { path: '/data/', command: '/usr/bin/chmod -R 774 $@/$#', mask: ['IN_CREATE'] },
+              deletelog: { path: '/var/run/', command: '/usr/bin/rm /var/log/daemon.log', mask: ['IN_DELETE'] }
+            }
           }
-        }}
+        end
+
         it { is_expected.to create_incron__system_table('allowrw') }
         it { is_expected.to create_incron__system_table('deletelog') }
       end

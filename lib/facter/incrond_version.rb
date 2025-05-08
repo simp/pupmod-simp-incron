@@ -7,6 +7,6 @@ Facter.add('incrond_version') do
   setcode do
     require 'open3'
     # The version command outputs to stderr
-    Open3.capture3(incrond_cmd, '--version')[1].split(/\s+/).last
+    Open3.capture3(incrond_cmd, '--version')[1].split(%r{\s+}).last
   end
 end

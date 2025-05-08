@@ -10,9 +10,9 @@ describe 'incron::user' do
 
         context 'with default parameters' do
           let(:title) { 'foobar' }
+
           it { is_expected.to create_concat__fragment("incron_user_#{title}") }
         end
-
       end
     end
   end
