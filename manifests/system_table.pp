@@ -59,7 +59,6 @@ define incron::system_table (
   Array[String]                            $mask           = ['IN_MODIFY','IN_MOVE','IN_CREATE','IN_DELETE'],
   Optional[String]                         $custom_content = undef
 ) {
-
   include 'incron'
 
   $_ensure = $enable ? { true => 'present', default => 'absent' }
@@ -68,14 +67,14 @@ define incron::system_table (
   # custom type, otherwise Puppet will purge the /etc/incron.d directory of
   # all files and then the custom type will recreate them resulting in
   # a non-idempotent loop.
-  $_safe_name=simplib::safe_filename($name)
+  $_safe_name=regsubst($name, '[\\\\/?*:|"<>]', '__', 'G')
   file { "/etc/incron.d/${_safe_name}": ensure => file }
 
   if $custom_content {
     incron_system_table { $_safe_name:
       ensure  => $_ensure,
       content => $custom_content,
-      notify  => Class['incron::service']
+      notify  => Class['incron::service'],
     }
   }
   else {
@@ -84,7 +83,7 @@ define incron::system_table (
       path    => $path,
       mask    => $mask,
       command => $command,
-      notify  => Class['incron::service']
+      notify  => Class['incron::service'],
     }
   }
 }
