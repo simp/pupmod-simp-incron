@@ -9,6 +9,6 @@ class incron::service {
     ensure     => 'running',
     enable     => true,
     hasstatus  => true,
-    hasrestart => false
+    hasrestart => false,
   }
 }
