@@ -28,7 +28,7 @@ class incron (
   Hash                                  $system_table   = {},
   Variant[Enum['unlimited'],Integer[0]] $max_open_files = 'unlimited',
   Boolean                               $purge          = false,
-  String                                $package_ensure = simplib::lookup('simp_options::package_ensure', { 'default_value' => 'installed' })
+  String                                $package_ensure = 'installed'
 ) {
   package { 'incron': ensure => $package_ensure }
 
@@ -50,12 +50,12 @@ class incron (
     group          => 'root',
     mode           => '0400',
     ensure_newline => true,
-    warn           => true
+    warn           => true,
   }
 
   file { '/etc/incron.deny':
     ensure  => 'absent',
-    require => Package['incron']
+    require => Package['incron'],
   }
 
   file { '/etc/incron.d':
@@ -64,7 +64,7 @@ class incron (
     group   => 'root',
     mode    => '0755',
     purge   => $purge,
-    recurse => $purge
+    recurse => $purge,
   }
 
   init_ulimit { 'mod_open_files_incrond':
@@ -72,6 +72,6 @@ class incron (
     item    => 'max_open_files',
     value   => $max_open_files,
     notify  => Class['incron::service'],
-    require => Package['incron']
+    require => Package['incron'],
   }
 }
